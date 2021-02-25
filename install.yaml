@@ -1,20 +1,42 @@
 ---
-
 # ansible all -i hosts -m ping
 # ansible-playbook -i hosts install.yaml
 # ansible-playbook -i hosts install.yaml --ask-pass
 
 - name: Local SSH
   hosts: 127.0.0.1
-  
+
   roles:
     - local-ssh
+
+- name: Prepare for K3s
+  hosts: all
+  become: yes
+
+  roles:
+    - ssh
+    - hosts-file
+    - sys-update
+    - raspberry-init
+    - install-apps
+
+- name: Syslog setup
+  hosts: main
+  become: yes
+
+  roles:
+    - syslog
+
+- name: Enable syslog client
+  hosts: all
+  become: yes
+
+  roles:
+    - syslog-enable
 
 - name: Install K3s
   hosts: all
   become: yes
 
   roles:
-    - ssh
-    - sysupdate
-    - raspberry-init
+    - conf-files

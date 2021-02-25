@@ -1,0 +1,16 @@
+---
+- name: Copy SSH key to all hosts
+  file:
+    path: "~/.ssh"
+    state: directory
+
+- name: Create empty ~/.ssh/authorized_keys file
+  file:
+    path: "~/.ssh/authorized_keys"
+    state: touch
+
+- name: Copy key public key to remote hosts
+  copy:
+    src: "~/.ssh/{{ssh_key_filename}}.pub"
+    dest: "~/.ssh/authorized_keys"
+    mode: 0600

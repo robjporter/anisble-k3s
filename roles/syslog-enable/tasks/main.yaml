@@ -1,0 +1,12 @@
+- name: Enable syslog client
+  blockinfile:
+    dest: /etc/rsyslog.conf
+    block: |
+      # send all syslog messages to main
+      *.* @@k3s-master1.local:514
+    backup: yes
+
+- name: Restart service syslog
+  ansible.builtin.service:
+    name: rsyslog
+    state: restarted

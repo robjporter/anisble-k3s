@@ -1,0 +1,18 @@
+---
+- name: Copy file with owner and permissions
+  ansible.builtin.copy:
+    src: templates/k3s.conf
+    dest: /etc/sysctl.d/k3s.conf
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Insert a line at the end of a file.
+  blockinfile:
+    dest: /etc/sysctl.d/99-sysctl.conf
+    block: |
+      net.ipv6.conf.all.disable_ipv6 = 1
+      net.ipv6.conf.default.disable_ipv6 = 1
+      net.ipv6.conf.lo.disable_ipv6 = 1
+      net.ipv6.conf.eth0.disable_ipv6 = 1
+    backup: yes

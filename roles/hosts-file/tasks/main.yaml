@@ -1,0 +1,12 @@
+---
+- name: "Backup current generated /etc/hosts"
+  command: "cp /etc/hosts /etc/hosts.backup"
+  tags: etc_hosts
+  become: true
+
+- name: Update /etc/hosts file
+  become: true
+  blockinfile:
+    dest: /etc/hosts
+    content: "{{ lookup('template', 'templates/hosts.j2') }}"
+    state: present

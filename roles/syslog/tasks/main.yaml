@@ -1,0 +1,34 @@
+---
+- name: Create syslog directory
+  file:
+    path: /var/log/central
+    state: directory
+
+- name: Enable syslog server
+  blockinfile:
+    dest: /etc/rsyslog.conf
+    block: |
+      # provides UDP syslog reception
+      module(load="imudp")
+      input(type="imudp" port="514")
+
+      # provides TCP syslog reception
+      module(load="imtcp")
+      input(type="imtcp" port="514")
+    backup: yes
+
+- name: Copy syslog config
+  ansible.builtin.copy:
+    src: templates/central.conf
+    dest: /etc/rsyslog.d/central.conf
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Copy syslog rotate config
+  ansible.builtin.copy:
+    src: templates/logrotate.conf
+    dest: /etc/logrotate.d/central
+    owner: root
+    group: root
+    mode: "0644"
